@@ -1,0 +1,13 @@
+Step 1:Pull the Official Apache (httpd) Docker Image docker pull httpd:2.4 
+ 
+Step 2: Create a Sample Website 
+Create a folder and a basic HTML file: 
+mkdir apache-site 
+echo "<h1>Welcome to Apache on Docker (RHEL 9)</h1>" > apache-site/index.html 
+ 
+ Step 3: Run Apache with Mounted Content docker run -dit --name my-apache \ 
+  -p 8080:80 \ 
+  -v "$PWD/apache-site":/usr/local/apache2/htdocs/ \   httpd:2.4 
+Step 5: Access Apache in Browser 
+Open: browser  http://localhost:8080 
+Step 7: Stop & Remove the Container docker stop my-apache docker rm my-apache 

@@ -1,0 +1,6 @@
+Use Docker’s Official DinD Image 
+docker run --privileged --name dind-test -d docker:dind 
+➔ Exec into Container and Run Docker Commands 
+docker exec -it dind-test sh docker info 
+docker run hello-world 
+ 

@@ -1,0 +1,56 @@
+Here’s the formatted version of your instructions for pulling and running a GUI-enabled Docker image:
+
+### Step 1: Pull a GUI-enabled Image
+
+To pull a pre-built GUI-enabled image (e.g., Firefox), use:
+
+```bash
+docker pull jess/firefox
+```
+
+Alternatively, you can use a general Ubuntu image and install any GUI application:
+
+```bash
+docker run -it --rm \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  ubuntu:22.04
+```
+
+Then, inside the container, run:
+
+```bash
+apt update && apt install -y firefox
+```
+
+### Dockerfile
+
+Create a Dockerfile with the following content:
+
+```Dockerfile
+# Dockerfile
+FROM ubuntu:22.04
+RUN apt update && apt install -y \
+    firefox \
+    x11-apps \
+    && apt clean
+CMD firefox
+```
+
+### Build & Run
+
+To build and run the Docker image, use the following commands:
+
+```bash
+docker build -t gui-firefox .
+```
+
+Then, run the container with:
+
+```bash
+docker run -it --rm \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  gui-firefox
+```
+

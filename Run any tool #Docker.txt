@@ -1,0 +1,18 @@
+Experiment: Run Python in Docker (on RHEL 9) 
+ 
+Step 1: Install Docker (Skip if already installed) 
+--> docker pull python:3.12-slim 
+3.12-slim: Pulling from library/python 3da95a905ed5: Pull complete a28b0ad00fe5: Pull complete 009ddaf357d4: Pull complete 3c3b4b852f07: Pull complete 
+Digest: sha256:4600f71648e110b005bf7bca92dbb335e549e6b27f2e83fceee5e11b3e1a4d01 
+Status: Downloaded newer image for python:3.12-slim 
+Step 2: Pull the Official Python Docker Image 
+➔	docker pull python:3.12-slim 
+Step 3: Run a Python Shell in Docker 
+➔	docker run -it python:3.12-slim python 
+Python 3.12.11 (main, Jul  1 2025, 02:44:10) [GCC 12.2.0] on linux Type "help", "copyright", "credits" or "license" for more information. >>> print("Hello from Python inside Docker!") Hello from Python inside Docker! 
+Step 4: Run a Python Script 
+	> 	>>>exit() 
+> ➜  ~ echo 'print("/ Hello from script inside Docker!")' > hello.py 
+> ➜  ~ docker run --rm -v "$PWD":/usr/src/app -w /usr/src/app python:3.12-slim python hello.py 
+	> 	/Hello from script inside Docker! 
+ 

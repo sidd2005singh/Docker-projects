@@ -1,0 +1,51 @@
+Here’s the formatted version of your Dockerfile and instructions:
+
+### Step 1: Create a Dockerfile
+
+```Dockerfile
+# Dockerfile
+FROM rhel:9
+ENV container docker
+RUN dnf -y install systemd; \
+    dnf clean all; \
+    systemctl mask dev-mqueue.mount dev-hugepages.mount sys-fs-fuse-connections.mount \
+    systemd-remount-fs.service sys-kernel-config.mount sys-kernel-debug.mount
+VOLUME [ "/sys/fs/cgroup" ]
+STOPSIGNAL SIGRTMIN+3
+CMD ["/usr/sbin/init"]
+```
+
+### Step 2: Build the Image
+
+```bash
+docker build -t rhel9-systemd .
+```
+
+### Step 3: Run the Container with Privileges
+
+```bash
+docker run --privileged --name test-systemd \
+  -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
+  -d rhel9-systemd
+```
+
+### Step 4: Access Container and Use systemctl
+
+```bash
+docker exec -it test-systemd /bin/bash
+```
+
+Now inside the container, you can run:
+
+```bash
+systemctl status
+systemctl start sshd
+```
+
+### To Clean Up
+
+```bash
+docker stop test-systemd
+docker rm test-systemd
+``` 
+

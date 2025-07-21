@@ -1,0 +1,77 @@
+Here’s the formatted version of your instructions for creating a Docker container that needs audio:
+
+### Step 1: Create a Docker Container That Needs Audio
+
+Pull the Ubuntu image:
+
+```bash
+docker pull ubuntu:22.04
+```
+
+### Step 2: Run Docker with PulseAudio Access
+
+Run the Docker container with the necessary PulseAudio access:
+
+```bash
+docker run -it --rm \
+  --device /dev/snd \
+  -e PULSE_SERVER=unix:/tmp/pulseaudio.socket \
+  -v /run/user/$(id -u)/pulse:/run/user/$(id -u)/pulse \
+  -v /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
+  ubuntu:22.04
+```
+
+### Step 3: Install Sound Tools in Container
+
+Inside the container shell, run the following commands to install sound tools:
+
+```bash
+apt update
+apt install -y alsa-utils pulseaudio ffmpeg
+```
+
+Now, test audio with:
+
+```bash
+ffplay -nodisp -autoexit /usr/share/sounds/alsa/Front_Center.wav
+```
+
+You should see output similar to:
+
+```
+Input #0, wav, from '/usr/share/sounds/alsa/Front_Center.wav':
+  Duration: 00:00:01.43, bitrate: 768 kb/s
+  Stream #0:0: Audio: pcm_s16le, 48000 Hz, 1 channels, s16, 768 kb/s
+ALSA lib pcm.c:8568:(snd_pcm_recover) underrun occurred
+```
+
+### Dockerfile for Persistent Audio App
+
+Create a Dockerfile with the following content:
+
+```Dockerfile
+# Dockerfile
+FROM ubuntu:22.04
+RUN apt update && apt install -y ffmpeg pulseaudio alsa-utils
+CMD ["ffplay", "-nodisp", "-autoexit", "/usr/share/sounds/alsa/Front_Center.wav"]
+```
+
+### Build and Run
+
+To build and run the Docker image, use the following commands:
+
+```bash
+docker build -t my-sound-test .
+```
+
+Then, run the container with:
+
+```bash
+docker run -it --rm \
+  --device /dev/snd \
+  -e PULSE_SERVER=unix:/tmp/pulseaudio.socket \
+  -v /run/user/$(id -u)/pulse:/run/user/$(id -u)/pulse \
+  -v /tmp/pulseaudio.socket:/tmp/pulseaudio.socket \
+  my-sound-test
+```
+
